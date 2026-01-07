@@ -5,41 +5,41 @@ namespace Week01
 {
     public static class Arrays
     {
-        // Part 1: Create an array of multiples of a number
+        // Part 1: Create an array of multiples of a given starting number
         public static double[] MultiplesOf(double start, int count)
         {
             // Step 1: Create an array that can hold 'count' values
-            double[] multiples = new double[count];
+            double[] result = new double[count];
 
-            // Step 2: Loop through the array indices
+            // Step 2: Loop over the array indices
             for (int i = 0; i < count; i++)
             {
-                // Step 3: Calculate each multiple
-                // Multiply the starting number by (i + 1) to get sequential multiples
-                multiples[i] = start * (i + 1);
+                // Step 3: Each element is start * (i + 1)
+                // This ensures the first element is start * 1
+                result[i] = start * (i + 1);
             }
 
             // Step 4: Return the completed array
-            return multiples;
+            return result;
         }
 
         // Part 2: Rotate a list to the right by 'amount'
         public static void RotateListRight(List<int> data, int amount)
         {
-            // Step 1: Determine the split index
-            // The last 'amount' of elements will move to the front
+            // Step 1: Determine the index to split the list
+            // Last 'amount' elements move to the front
             int splitIndex = data.Count - amount;
 
-            // Step 2: Extract the elements that will move to the front
+            // Step 2: Extract the elements to move to the front
             List<int> rightSegment = data.GetRange(splitIndex, amount);
 
-            // Step 3: Extract the elements that will remain at the back
+            // Step 3: Extract the remaining elements
             List<int> leftSegment = data.GetRange(0, splitIndex);
 
             // Step 4: Clear the original list so we can rebuild it
             data.Clear();
 
-            // Step 5: Add the right segment first (rotated elements)
+            // Step 5: Add the right segment first
             data.AddRange(rightSegment);
 
             // Step 6: Add the left segment after
