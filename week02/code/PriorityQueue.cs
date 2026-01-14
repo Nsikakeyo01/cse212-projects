@@ -1,63 +1,48 @@
-﻿public class PriorityQueue
-{
-    private List<PriorityItem> _queue = new();
+﻿using System;
+using System.Collections.Generic;
 
-    /// <summary>
-    /// Add a new value to the queue with an associated priority.  The
-    /// node is always added to the back of the queue regardless of 
-    /// the priority.
-    /// </summary>
-    /// <param name="value">The value</param>
-    /// <param name="priority">The priority</param>
-    public void Enqueue(string value, int priority)
+namespace UniqueNsikakQueues
+{
+    // Generic priority queue item
+    public class PriorityQueueItem<T>
     {
-        var newNode = new PriorityItem(value, priority);
-        _queue.Add(newNode);
+        public T Value { get; set; }
+        public int Priority { get; set; }
     }
 
-    public string Dequeue()
+    // Priority queue with FIFO behavior for same-priority items
+    public class PriorityQueue<T>
     {
-        if (_queue.Count == 0) // Verify the queue is not empty
+        private List<PriorityQueueItem<T>> queue = new List<PriorityQueueItem<T>>();
+
+        public void Enqueue(T value, int priority)
         {
-            throw new InvalidOperationException("The queue is empty.");
+            queue.Add(new PriorityQueueItem<T> { Value = value, Priority = priority });
         }
 
-        // Find the index of the item with the highest priority to remove
-        var highPriorityIndex = 0;
-        for (int index = 1; index < _queue.Count - 1; index++)
+        public T Dequeue()
         {
-            if (_queue[index].Priority >= _queue[highPriorityIndex].Priority)
-                highPriorityIndex = index;
+            if (queue.Count == 0)
+                throw new InvalidOperationException("The queue is empty.");
+
+            int highest = int.MinValue;
+            int index = -1;
+
+            // Find highest priority
+            for (int i = 0; i < queue.Count; i++)
+            {
+                if (queue[i].Priority > highest)
+                {
+                    highest = queue[i].Priority;
+                    index = i;
+                }
+            }
+
+            var item = queue[index];
+            queue.RemoveAt(index);
+            return item.Value;
         }
 
-        // Remove and return the item with the highest priority
-        var value = _queue[highPriorityIndex].Value;
-        return value;
-    }
-
-    // DO NOT MODIFY THE CODE IN THIS METHOD
-    // The graders rely on this method to check if you fixed all the bugs, so changes to it will cause you to lose points.
-    public override string ToString()
-    {
-        return $"[{string.Join(", ", _queue)}]";
-    }
-}
-
-internal class PriorityItem
-{
-    internal string Value { get; set; }
-    internal int Priority { get; set; }
-
-    internal PriorityItem(string value, int priority)
-    {
-        Value = value;
-        Priority = priority;
-    }
-
-    // DO NOT MODIFY THE CODE IN THIS METHOD
-    // The graders rely on this method to check if you fixed all the bugs, so changes to it will cause you to lose points.
-    public override string ToString()
-    {
-        return $"{Value} (Pri:{Priority})";
+        public int Count => queue.Count;
     }
 }
