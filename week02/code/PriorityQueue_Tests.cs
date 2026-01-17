@@ -1,41 +1,44 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using UniqueNsikakQueues;
 
-namespace UniqueNsikakQueues.Tests
+[TestClass]
+public class PriorityQueue_Tests
 {
-    [TestClass]
-    public class PriorityQueue_Tests
+    [TestMethod]
+    public void Test_Highest_Priority_Removed_First()
     {
-        [TestMethod]
-        public void Test_Dequeue_HighestPriority()
-        {
-            var pq = new PriorityQueue<string>();
-            pq.Enqueue("Low", 1);
-            pq.Enqueue("High", 5);
-            pq.Enqueue("Medium", 3);
+        var queue = new PriorityQueue();
+        queue.AddPerson("Low", 1);
+        queue.AddPerson("High", 5);
+        queue.AddPerson("Medium", 3);
 
-            var firstOut = pq.Dequeue();
-            Assert.AreEqual("High", firstOut); // Highest priority removed first
-        }
+        string first = queue.RemoveNext();
+        Assert.AreEqual("High", first);
+    }
 
-        [TestMethod]
-        public void Test_SamePriority_FIFO()
-        {
-            var pq = new PriorityQueue<string>();
-            pq.Enqueue("First", 2);
-            pq.Enqueue("Second", 2);
+    [TestMethod]
+    public void Test_Same_Priority_FIFO()
+    {
+        var queue = new PriorityQueue();
+        queue.AddPerson("First", 2);
+        queue.AddPerson("Second", 2);
 
-            Assert.AreEqual("First", pq.Dequeue());  // FIFO behavior
-            Assert.AreEqual("Second", pq.Dequeue());
-        }
+        string first = queue.RemoveNext();
+        string second = queue.RemoveNext();
 
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void Test_EmptyQueueThrows()
-        {
-            var pq = new PriorityQueue<string>();
-            pq.Dequeue(); // Should throw
-        }
+        Assert.AreEqual("First", first);
+        Assert.AreEqual("Second", second);
+    }
+
+    [TestMethod]
+    public void Test_Empty_Queue_Exception()
+    {
+        var queue = new PriorityQueue();
+
+        var ex = Assert.ThrowsException<InvalidOperationException>(
+            () => queue.RemoveNext()
+        );
+
+        Assert.AreEqual("No one in the queue.", ex.Message);
     }
 }

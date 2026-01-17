@@ -1,50 +1,47 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using UniqueNsikakQueues;
 
-namespace UniqueNsikakQueues.Tests
+[TestClass]
+public class TakingTurnsQueue_Tests
 {
-    [TestClass]
-    public class TakingTurnsQueue_Tests
+    [TestMethod]
+    public void Test_Turns_Decrement()
     {
-        [TestMethod]
-        public void Test_Turns_Decrement()
+        var queue = new TakingTurnsQueue();
+        queue.AddPerson("Alice", 3);
+
+        var first = queue.GetNextPerson();
+        Assert.AreEqual("Alice", first.Name);
+        Assert.AreEqual(2, first.Turns); // 3 -> 2 ✅
+
+        var second = queue.GetNextPerson();
+        Assert.AreEqual("Alice", second.Name);
+        Assert.AreEqual(1, second.Turns); // 2 -> 1 ✅
+    }
+
+    [TestMethod]
+    public void Test_Infinite_Turns()
+    {
+        var queue = new TakingTurnsQueue();
+        queue.AddPerson("Bob", 0); // infinite
+
+        for (int i = 0; i < 5; i++)
         {
-            var queue = new TakingTurnsQueue();
-            var alice = new Person { Name = "Alice", Turns = 3 };
-            queue.AddPerson(alice);
-
-            var first = queue.GetNextPerson();
-            Assert.AreEqual("Alice", first.Name);
-            Assert.AreEqual(2, first.Turns); // Decremented correctly
-
-            var second = queue.GetNextPerson();
-            Assert.AreEqual("Alice", second.Name);
-            Assert.AreEqual(1, second.Turns); // Decremented again
+            var person = queue.GetNextPerson();
+            Assert.AreEqual("Bob", person.Name);
+            Assert.AreEqual(0, person.Turns);
         }
+    }
 
-        [TestMethod]
-        public void Test_InfiniteTurnsPerson()
-        {
-            var queue = new TakingTurnsQueue();
-            var bob = new Person { Name = "Bob", Turns = 0 }; // infinite
-            queue.AddPerson(bob);
+    [TestMethod]
+    public void Test_Empty_Queue_Exception()
+    {
+        var queue = new TakingTurnsQueue();
 
-            // Dequeue multiple times, should never empty
-            for (int i = 0; i < 10; i++)
-            {
-                var next = queue.GetNextPerson();
-                Assert.AreEqual("Bob", next.Name);
-                Assert.AreEqual(0, next.Turns); // Infinite stays 0
-            }
-        }
+        var ex = Assert.ThrowsException<InvalidOperationException>(
+            () => queue.GetNextPerson()
+        );
 
-        [TestMethod]
-        [ExpectedException(typeof(InvalidOperationException))]
-        public void Test_EmptyQueueThrows()
-        {
-            var queue = new TakingTurnsQueue();
-            queue.GetNextPerson();
-        }
+        Assert.AreEqual("No one in the queue.", ex.Message);
     }
 }

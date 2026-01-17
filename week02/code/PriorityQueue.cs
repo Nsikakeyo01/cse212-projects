@@ -1,48 +1,49 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace UniqueNsikakQueues
+public class PriorityQueueItem
 {
-    // Generic priority queue item
-    public class PriorityQueueItem<T>
+    public string Name { get; set; }
+    public int Priority { get; set; }
+}
+
+public class PriorityQueue
+{
+    private List<PriorityQueueItem> queue = new List<PriorityQueueItem>();
+
+    // Add a person with a priority
+    public void AddPerson(string name, int priority)
     {
-        public T Value { get; set; }
-        public int Priority { get; set; }
+        queue.Add(new PriorityQueueItem
+        {
+            Name = name,
+            Priority = priority
+        });
     }
 
-    // Priority queue with FIFO behavior for same-priority items
-    public class PriorityQueue<T>
+    // Remove the next person with the highest priority (FIFO for same priority)
+    public string RemoveNext()
     {
-        private List<PriorityQueueItem<T>> queue = new List<PriorityQueueItem<T>>();
+        if (queue.Count == 0)
+            throw new InvalidOperationException("No one in the queue.");
 
-        public void Enqueue(T value, int priority)
+        int highestPriority = int.MinValue;
+        int index = 0;
+
+        for (int i = 0; i < queue.Count; i++)
         {
-            queue.Add(new PriorityQueueItem<T> { Value = value, Priority = priority });
-        }
-
-        public T Dequeue()
-        {
-            if (queue.Count == 0)
-                throw new InvalidOperationException("The queue is empty.");
-
-            int highest = int.MinValue;
-            int index = -1;
-
-            // Find highest priority
-            for (int i = 0; i < queue.Count; i++)
+            if (queue[i].Priority > highestPriority)
             {
-                if (queue[i].Priority > highest)
-                {
-                    highest = queue[i].Priority;
-                    index = i;
-                }
+                highestPriority = queue[i].Priority;
+                index = i;
             }
-
-            var item = queue[index];
-            queue.RemoveAt(index);
-            return item.Value;
         }
 
-        public int Count => queue.Count;
+        string name = queue[index].Name;
+        queue.RemoveAt(index);
+        return name;
     }
+
+    // Property to get current queue length
+    public int Length => queue.Count;
 }

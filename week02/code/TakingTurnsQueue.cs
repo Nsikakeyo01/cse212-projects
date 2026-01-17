@@ -1,52 +1,46 @@
 using System;
 using System.Collections.Generic;
 
-namespace UniqueNsikakQueues
+public class TakingTurnsQueue
 {
-    // Represents a person in the taking turns queue
-    public class Person
+    private Queue<Person> queue = new Queue<Person>();
+
+    // Add a person to the queue
+    public void AddPerson(string name, int turns)
     {
-        public string Name { get; set; }
-        public int Turns { get; set; } // 0 or less = infinite turns
+        queue.Enqueue(new Person
+        {
+            Name = name,
+            Turns = turns
+        });
     }
 
-    // Circular queue that manages people taking turns
-    public class TakingTurnsQueue
+    // Get the next person in line
+    public Person GetNextPerson()
     {
-        private Queue<Person> queue = new Queue<Person>();
+        if (queue.Count == 0)
+            throw new InvalidOperationException("No one in the queue.");
 
-        // Add a person to the queue
-        public void AddPerson(Person person)
+        Person person = queue.Dequeue();
+
+        if (person.Turns > 0)
         {
-            if (person == null)
-                throw new ArgumentNullException(nameof(person));
+            // Decrement turns immediately
+            person.Turns--;
 
+            // Re-enqueue if still has turns
+            if (person.Turns > 0)
+                queue.Enqueue(person);
+        }
+        else
+        {
+            // Infinite turns → always re-enqueue
             queue.Enqueue(person);
         }
 
-        // Get the next person in line
-        public Person GetNextPerson()
-        {
-            if (queue.Count == 0)
-                throw new InvalidOperationException("The queue is empty.");
-
-            Person next = queue.Dequeue();
-
-            if (next.Turns > 0)
-            {
-                next.Turns--; // Decrement turns
-                if (next.Turns > 0) // Still has turns remaining, re-enqueue
-                    queue.Enqueue(next);
-            }
-            else
-            {
-                // Infinite turns (0 or negative) → always re-enqueue
-                queue.Enqueue(next);
-            }
-
-            return next;
-        }
-
-        public int Count => queue.Count;
+        return person;
     }
+
+    // Property to get current queue length
+    public int Length => queue.Count;
 }
