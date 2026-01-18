@@ -8,11 +8,7 @@ public class TakingTurnsQueue
     // Add a person to the queue
     public void AddPerson(string name, int turns)
     {
-        queue.Enqueue(new Person
-        {
-            Name = name,
-            Turns = turns
-        });
+        queue.Enqueue(new Person(name, turns));
     }
 
     // Get the next person in line
@@ -25,10 +21,7 @@ public class TakingTurnsQueue
 
         if (person.Turns > 0)
         {
-            // Decrement turns immediately
             person.Turns--;
-
-            // Re-enqueue if still has turns
             if (person.Turns > 0)
                 queue.Enqueue(person);
         }
@@ -41,6 +34,5 @@ public class TakingTurnsQueue
         return person;
     }
 
-    // Property to get current queue length
     public int Length => queue.Count;
 }

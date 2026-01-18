@@ -12,18 +12,18 @@ public class TakingTurnsQueue_Tests
 
         var first = queue.GetNextPerson();
         Assert.AreEqual("Alice", first.Name);
-        Assert.AreEqual(2, first.Turns); // 3 -> 2 ✅
+        Assert.AreEqual(2, first.Turns);
 
         var second = queue.GetNextPerson();
         Assert.AreEqual("Alice", second.Name);
-        Assert.AreEqual(1, second.Turns); // 2 -> 1 ✅
+        Assert.AreEqual(1, second.Turns);
     }
 
     [TestMethod]
     public void Test_Infinite_Turns()
     {
         var queue = new TakingTurnsQueue();
-        queue.AddPerson("Bob", 0); // infinite
+        queue.AddPerson("Bob", 0);
 
         for (int i = 0; i < 5; i++)
         {

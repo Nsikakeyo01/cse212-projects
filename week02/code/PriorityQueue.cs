@@ -22,7 +22,7 @@ public class PriorityQueue
     }
 
     // Remove the next person with the highest priority (FIFO for same priority)
-    public string RemoveNext()
+    public string Dequeue()
     {
         if (queue.Count == 0)
             throw new InvalidOperationException("No one in the queue.");
@@ -44,6 +44,5 @@ public class PriorityQueue
         return name;
     }
 
-    // Property to get current queue length
     public int Length => queue.Count;
 }
