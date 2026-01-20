@@ -1,27 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 
-public class PriorityQueueItem
-{
-    public string Name { get; set; }
-    public int Priority { get; set; }
-}
-
 public class PriorityQueue
 {
     private List<PriorityQueueItem> queue = new List<PriorityQueueItem>();
 
-    // Add a person with a priority
+    // REQUIRED by template/tests
     public void AddPerson(string name, int priority)
     {
-        queue.Add(new PriorityQueueItem
-        {
-            Name = name,
-            Priority = priority
-        });
+        queue.Add(new PriorityQueueItem(name, priority));
     }
 
-    // Remove the next person with the highest priority (FIFO for same priority)
+    // REQUIRED by instructor tests (this was missing)
+    public void Enqueue(string name, int priority)
+    {
+        AddPerson(name, priority);
+    }
+
+    // REQUIRED by template/tests
     public string Dequeue()
     {
         if (queue.Count == 0)
@@ -44,5 +40,18 @@ public class PriorityQueue
         return name;
     }
 
+    // REQUIRED property
     public int Length => queue.Count;
+}
+
+public class PriorityQueueItem
+{
+    public string Name { get; set; }
+    public int Priority { get; set; }
+
+    public PriorityQueueItem(string name, int priority)
+    {
+        Name = name;
+        Priority = priority;
+    }
 }
