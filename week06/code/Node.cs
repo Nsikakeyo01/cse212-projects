@@ -1,45 +1,92 @@
+using System;
+using System.Collections.Generic;
+
 public class Node
 {
-    public int Data { get; set; }
-    public Node? Right { get; private set; }
-    public Node? Left { get; private set; }
+    public int Value { get; set; }
+    public Node? Left { get; set; }
+    public Node? Right { get; set; }
 
-    public Node(int data)
+    public Node(int value)
     {
-        this.Data = data;
+        Value = value;
+        Left = null;
+        Right = null;
     }
 
+    // Insert unique values only
     public void Insert(int value)
     {
-        // TODO Start Problem 1
+        if (value == Value) return; // skip duplicates
 
-        if (value < Data)
+        if (value < Value)
         {
-            // Insert to the left
-            if (Left is null)
+            if (Left == null)
                 Left = new Node(value);
             else
                 Left.Insert(value);
         }
         else
         {
-            // Insert to the right
-            if (Right is null)
+            if (Right == null)
                 Right = new Node(value);
             else
                 Right.Insert(value);
         }
     }
 
+    // Check if value exists in subtree
     public bool Contains(int value)
     {
-        // TODO Start Problem 2
-        return false;
+        if (value == Value) return true;
+
+        if (value < Value)
+            return Left?.Contains(value) ?? false;
+        else
+            return Right?.Contains(value) ?? false;
     }
 
+    // Traverse backward (largest to smallest)
+    public IEnumerable<int> TraverseBackward()
+    {
+        if (Right != null)
+        {
+            foreach (var val in Right.TraverseBackward())
+                yield return val;
+        }
+
+        yield return Value;
+
+        if (Left != null)
+        {
+            foreach (var val in Left.TraverseBackward())
+                yield return val;
+        }
+    }
+
+    // Traverse forward (smallest to largest)
+    public IEnumerable<int> TraverseForward()
+    {
+        if (Left != null)
+        {
+            foreach (var val in Left.TraverseForward())
+                yield return val;
+        }
+
+        yield return Value;
+
+        if (Right != null)
+        {
+            foreach (var val in Right.TraverseForward())
+                yield return val;
+        }
+    }
+
+    // Get height of subtree
     public int GetHeight()
     {
-        // TODO Start Problem 4
-        return 0; // Replace this line with the correct return statement(s)
+        int leftHeight = Left?.GetHeight() ?? 0;
+        int rightHeight = Right?.GetHeight() ?? 0;
+        return 1 + Math.Max(leftHeight, rightHeight);
     }
 }
